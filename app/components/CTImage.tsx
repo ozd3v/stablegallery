@@ -12,6 +12,7 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
 import Button from '@mui/material/Button';
 import { settings } from '../config';
+import TextField from '@mui/material/TextField';
 
 type Props = {}
 type FixmeAny = any
@@ -22,6 +23,8 @@ function CTImage({ }: Props) {
     const [image, setImage]: FixmeAny = React.useState({});
     const [text, setText]: FixmeAny = React.useState("");
     const [imgObj, setImgObj]: FixmeAny = React.useState({} as any);
+    const [password, setPassword] = React.useState('');
+
     React.useEffect(() => {
         const fetchData = async () => {
             const result = await fetch(settings.getAllFiles, {
@@ -80,6 +83,31 @@ function CTImage({ }: Props) {
     const handleClose = () => {
         setOpen(false);
     };
+
+    const borrarImagen = async () => {
+        setLoading(true);
+        const result = await fetch(settings.deleteImage, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                imagen: imgObj.folder + imgObj.imagen,
+                prompt: imgObj.folder + imgObj.prompt,
+                password: password
+
+            })
+
+        })
+        const json = await result.json()
+        if (!json.sucess) {
+            console.log('error')
+            return;
+        }
+        console.log(json)
+        setLoading(false)
+        setOpen(false);
+    }
     return (
         <>
             <div className={`${styles.imageGrid}`}>
@@ -123,8 +151,19 @@ function CTImage({ }: Props) {
 
                 </DialogContent>
                 <DialogActions>
+                    <TextField
+                        id="standard-password-input"
+                        label="Password"
+                        type="password"
+                        autoComplete="current-password"
+                        variant="standard"
+                        value={password}
+                        onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                            setPassword(event.target.value);
+                        }}
+                    />
                     <Button onClick={handleClose}>{"Cerrar"}</Button>
-                    <Button variant="contained" color="error" onClick={handleClose}>{"Borrar"}</Button>
+                    <Button variant="contained" color="error" onClick={borrarImagen}>{"Borrar"}</Button>
                 </DialogActions>
             </Dialog>
         </>

@@ -62,6 +62,9 @@ export async function GET(req: NextRequest) {
 
   const destinationFolder = settings.destinationFolder;
 
+  //reverse newArray
+  newArray.reverse();
+
 
 
   for (let i = 0; i < newArray.length; i++) {
