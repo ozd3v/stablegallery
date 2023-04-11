@@ -4,9 +4,9 @@ export const settings = {
     img2imggrid: 'img2img-grids',
     txt2imggrid: 'txt2img-grids',
     extrasImages: 'extras-images',
-    getAllFiles: 'https://ozjedah.hopto.org/api/getAllFiles',
-    getImage: 'https://ozjedah.hopto.org/api/getImage',
-    deleteImage: 'https://ozjedah.hopto.org/api/deleteImage',
+    getAllFiles: 'http://localhost:3000/api/getAllFiles',
+    getImage: 'http://localhost:3000/api/getImage',
+    deleteImage: 'http://localhost:3000/api/deleteImage',
 
 }
 // http://localhost:3000/api/getAllFiles
