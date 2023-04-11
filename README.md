@@ -11,9 +11,16 @@ Replace the following field
     img2imggrid: 'img2img-grids', // image2image grid folder 
     txt2imggrid: 'txt2img-grids', // text2image grid folder
     extrasImages: 'extras-images', // extra images folder
-    getAllFiles: 'http://localhost:3000/api/getAllFiles' // chagen domain to your domain and port if not running on local
-    getImage: 'http://localhost:3000/api/getImage', // chagen domain to your domain and port if not running on local
+    getAllFiles: 'http://localhost:3000/api/getAllFiles' // change domain to your domain and port if not running on local
+    getImage: 'http://localhost:3000/api/getImage', // change domain to your domain and port if not running on local
 ```
+
+For delete the images from the server you need to add the following line to the `.env.local` file
+```ts
+    SECRET=REPLACE_YOUR_PASS_HERE
+```
+
+so when you delete the images from the gallery you need to add the password to the input field.
 
 First, run the development server:
 
