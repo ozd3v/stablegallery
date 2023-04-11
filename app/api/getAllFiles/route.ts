@@ -14,7 +14,7 @@ export const config = {
   },
 }
 // get all file from direcotry /mtn/shares/sdimages and return as json using nodejs fs module
-export async function GET(req: NextRequest) {
+export async function POST(req: NextRequest) {
   const topTolders = readdirSync(settings.baseFolder);
   // exclude folder 'img2img-grids' from topTolders array
   let index = topTolders.indexOf(settings.img2imggrid);
@@ -64,7 +64,7 @@ export async function GET(req: NextRequest) {
 
   //reverse newArray
   newArray.reverse();
-
+  //console.log(newArray[0]);
 
 
   for (let i = 0; i < newArray.length; i++) {

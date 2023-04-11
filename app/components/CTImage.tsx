@@ -28,20 +28,24 @@ function CTImage({ }: Props) {
     React.useEffect(() => {
         const fetchData = async () => {
             const result = await fetch(settings.getAllFiles, {
-                method: 'GET',
+                method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
-                }
+                },
+                body: JSON.stringify({
+                    path: '',
+                })
             })
             const json = await result.json()
             if (!json.sucess) {
                 console.log('error')
                 return;
             }
+            //console.log(json.data)
             setImagenes(json.data)
             setLoading(false)
         }
-
+        console.log('fetching')
         fetchData();
     }, []);
     const queryImage = async (image: any) => {
@@ -94,6 +98,7 @@ function CTImage({ }: Props) {
             body: JSON.stringify({
                 imagen: imgObj.folder + imgObj.imagen,
                 prompt: imgObj.folder + imgObj.prompt,
+                thumb: settings.destinationFolder + '/' + imgObj.imagen,
                 password: password
 
             })
@@ -108,8 +113,29 @@ function CTImage({ }: Props) {
         setLoading(false)
         setOpen(false);
     }
+    const realoadimages = async () => {
+        setLoading(true)
+        const result = await fetch(settings.getAllFiles, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                path: '',
+            })
+        })
+        const json = await result.json()
+        if (!json.sucess) {
+            console.log('error')
+            return;
+        }
+        //console.log(json.data)
+        setImagenes(json.data)
+        setLoading(false)
+    }
     return (
         <>
+            <Button variant="contained" onClick={realoadimages}>Reload</Button>
             <div className={`${styles.imageGrid}`}>
                 {imagenes.map((imagen: FixmeAny) => {
                     const buffer = Buffer.from(imagen.thumbnail, 'base64');

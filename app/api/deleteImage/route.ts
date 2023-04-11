@@ -14,6 +14,7 @@ export async function POST(req: NextRequest) {
     const json = await req.json();
     const imagen = json.imagen;
     const prompt = json.prompt;
+    const thumb = json.thumb;
     const password = json.password;
     let borrado = false;
     if (process.env.SECRET !== password) {
@@ -32,6 +33,14 @@ export async function POST(req: NextRequest) {
         }
     });
     unlink(prompt, (err) => {
+        if (err) {
+            console.error('Ocurrió un error al intentar eliminar el archivo:', err);
+        } else {
+            //console.log('Archivo eliminado con éxito');
+            borrado = true;
+        }
+    });
+    unlink(thumb, (err) => {
         if (err) {
             console.error('Ocurrió un error al intentar eliminar el archivo:', err);
         } else {
