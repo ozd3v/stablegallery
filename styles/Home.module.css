@@ -1,0 +1,19 @@
+.homeContainer {
+    background-color: #0f0f0f;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
+    padding: 16px;
+    color: #ffc400;
+    font-family: 'Courier New', Courier, monospace;
+}
+
+.title {
+    font-size: 2rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    border-bottom: 2px solid #ffc400;
+    padding-bottom: 8px;
+    margin-bottom: 16px;
+}

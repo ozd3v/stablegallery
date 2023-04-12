@@ -4,6 +4,7 @@ import React from 'react'
 import { Buffer } from 'buffer';
 import { v4 as uuidv4 } from 'uuid';
 import styles from '../../styles/ImageGrid.module.css'
+import DialogStyles from '../../styles/DialogStyles.module.css';
 import { Backdrop } from '@mui/material';
 import Spinner from './Spinner';
 import Dialog from '@mui/material/Dialog';
@@ -13,6 +14,7 @@ import DialogTitle from '@mui/material/DialogTitle';
 import Button from '@mui/material/Button';
 import { settings } from '../config';
 import TextField from '@mui/material/TextField';
+import TextDisplay from './TextDisplay';
 
 type Props = {}
 type FixmeAny = any
@@ -159,21 +161,25 @@ function CTImage({ }: Props) {
             >
                 <Spinner />
             </Backdrop>
-            <Dialog open={open} onClose={handleClose} maxWidth={'md'} fullWidth={true}>
-                <DialogTitle>{"Detalles"}</DialogTitle>
-                <DialogContent>
+            <Dialog open={open} onClose={handleClose} maxWidth={'md'}
+                fullWidth={true}
+                PaperProps={{
+                    className: DialogStyles.dialogContainer
+                }}
+
+            >
+                <DialogTitle className={DialogStyles.dialogTitle} >{"Detalles"}
+                </DialogTitle>
+                <DialogContent >
                     <p>Nombre: {imgObj.imagen}</p>
                     <p>Folder: {imgObj.folder}</p>
-                    { /* eslint-disable-next-line @next/next/no-img-element */}
-                    <img className="profile-photo" src={image} alt={"selectedFile.name"} />
-                    <br />
-                    { // convert \n\r to <br />
-                        text.split('\n').map((item: any, key: any) => {
-                            return <span key={key}>{item}<br /></span>
-                        })
 
-                    }
-                    <br />
+                    <div className={DialogStyles.imageContainer}>
+                        { /* eslint-disable-next-line @next/next/no-img-element */}
+                        <img className={`${DialogStyles.image} profile-photo`} src={image} alt={"selectedFile.name"} />
+                    </div>
+                    <TextDisplay rawText={text} />
+
 
                 </DialogContent>
                 <DialogActions>
@@ -187,9 +193,19 @@ function CTImage({ }: Props) {
                         onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
                             setPassword(event.target.value);
                         }}
+                        InputLabelProps={{
+                            className: DialogStyles.passwordInput,
+                        }}
+                        InputProps={{
+                            className: DialogStyles.passwordInput,
+                        }}
                     />
-                    <Button onClick={handleClose}>{"Cerrar"}</Button>
-                    <Button variant="contained" color="error" onClick={borrarImagen}>{"Borrar"}</Button>
+                    <Button onClick={handleClose}
+                        className={DialogStyles.closeButton}
+                    >{"Cerrar"}</Button>
+                    <Button variant="contained" color="error"
+                        className={DialogStyles.deleteButton}
+                        onClick={borrarImagen}>{"Borrar"}</Button>
                 </DialogActions>
             </Dialog>
         </>
