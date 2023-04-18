@@ -15,17 +15,20 @@ const TextDisplay: React.FC<Props> = ({ rawText }) => {
     //console.log('rawText', rawText);
     const textWithoutCarriageReturns = rawText.replace(/\r/g, '');
     const normalizedText = textWithoutCarriageReturns.replace(/\n{2,}/g, '\n');
+    //console.log('normalizedText', normalizedText);
 
-    const promptRegExp = /(.*)(Negative prompt:.*?)(Steps:.*)/s;
+    const promptRegExp = /(.*?)(Negative prompt:.*?)?(Steps:.*)/s;
     const matchResult = normalizedText.match(promptRegExp);
 
     if (!matchResult) {
-        console.error('Error: Text format not recognized');
+        console.error('Error: Text format not recognized')
         return null;
     }
 
     const [, promptText, negativePromptText, detailsText] = matchResult;
-    const negativePromptWithoutLabel = negativePromptText.replace('Negative prompt:', '').trim();
+    const negativePromptWithoutLabel = negativePromptText
+        ? negativePromptText.replace('Negative prompt:', '').trim()
+        : '';
     const copyToClipboard = (text: string) => {
         navigator.clipboard.writeText(text).then(
             () => {

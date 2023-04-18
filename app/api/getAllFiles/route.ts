@@ -1,5 +1,5 @@
 
-import { readdirSync, readFileSync, existsSync } from "fs";
+import { readdirSync, readFileSync, existsSync, stat } from "fs";
 import { NextResponse, NextRequest } from 'next/server';
 import path from 'path';
 import sharp from 'sharp';
@@ -12,6 +12,22 @@ export const config = {
       sizeLimit: '100mb',
     }
   },
+}
+
+const getFileStats: any = async (filePath: string) => {
+  return new Promise(async (resolve, reject) => {
+    stat(filePath, function (err, stats) {
+      //Checking for errors
+      if (err) {
+        //console.log(err)
+        reject(err);
+      }
+      else {
+        //Logging the stats Object
+        resolve(stats.ctime);
+      }
+    })
+  });
 }
 // get all file from direcotry /mtn/shares/sdimages and return as json using nodejs fs module
 export async function POST(req: NextRequest) {
@@ -30,13 +46,16 @@ export async function POST(req: NextRequest) {
     topTolders.splice(index, 1);
   }
   const files: any = [];
+  //console.log(topTolders);
   // for each folder in the array, get the files in the folder and add to the array files
   topTolders.forEach((topTolder) => {
     const dateFolder = readdirSync(`${settings.baseFolder}${topTolder}`);
+    //console.log(`${topTolder}  - ${dateFolder}`);
     dateFolder.forEach((folder) => {
       //files.push(folder);
       // for each folder get files 
       const filesInFolder = readdirSync(`${settings.baseFolder}${topTolder}/${folder}`);
+      //console.log(`--- ${topTolder}  - ${folder} - ${filesInFolder}`);
       filesInFolder.forEach((file) => {
         files.push({
           file: file,
@@ -45,7 +64,6 @@ export async function POST(req: NextRequest) {
       });
     });
   });
-
   const newArray = [];
 
   for (let i = 0; i < files.length; i += 2) {
@@ -58,12 +76,13 @@ export async function POST(req: NextRequest) {
     });
   }
 
+
   //console.log(newArray);
 
   const destinationFolder = settings.destinationFolder;
 
   //reverse newArray
-  newArray.reverse();
+  //newArray.reverse();
   //console.log(newArray[0]);
 
 
@@ -81,6 +100,7 @@ export async function POST(req: NextRequest) {
         const base64Thumbnail = thumbnailBuffer.toString('base64');
         item['thumbnail'] = base64Thumbnail;
         item['text'] = prompt;
+        item['ctime'] = await getFileStats(`${item.folder}${item.imagen}`);
         //console.log('thumbnail exists');
         continue;
       }
@@ -96,14 +116,15 @@ export async function POST(req: NextRequest) {
       const base64Thumbnail = thumbnailBuffer.toString('base64');
       item['thumbnail'] = base64Thumbnail;
       item['text'] = prompt;
+      item['ctime'] = new Date(await getFileStats(`${item.folder}${item.imagen}`));
     } catch (error) {
       console.log(error);
     }
   }
-
+  //console.log(newArray[1]);
   return NextResponse.json({
     sucess: true,
-    data: newArray,
+    data: newArray.sort((a: any, b: any) => b.ctime - a.ctime)
   }, { status: 200 });
 }
 
