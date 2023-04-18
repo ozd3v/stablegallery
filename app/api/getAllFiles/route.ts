@@ -32,6 +32,7 @@ const getFileStats: any = async (filePath: string) => {
 // get all file from direcotry /mtn/shares/sdimages and return as json using nodejs fs module
 export async function POST(req: NextRequest) {
   const topTolders = readdirSync(settings.baseFolder);
+  console.log("topTolders", topTolders);
   // exclude folder 'img2img-grids' from topTolders array
   let index = topTolders.indexOf(settings.img2imggrid);
   if (index > -1) {
@@ -65,6 +66,7 @@ export async function POST(req: NextRequest) {
     });
   });
   const newArray = [];
+  console.log("files", files)
 
   for (let i = 0; i < files.length; i += 2) {
     const imagen = files[i];

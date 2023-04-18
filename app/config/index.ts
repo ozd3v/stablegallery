@@ -10,3 +10,5 @@ export const settings = {
 
 }
 // http://localhost:3000/api/getAllFiles
+// 'C:/Users/zanbato/Desktop/laragon-portable/www/sdv2/stable-diffusion-webui/thumbnails'
+// 'C:/Users/zanbato/Desktop/laragon-portable/www/sdv2/stable-diffusion-webui/outputs/'
