@@ -29,7 +29,12 @@ function CTImage({ }: Props) {
 
     React.useEffect(() => {
         const fetchData = async () => {
-            const result = await fetch(settings.getAllFiles, {
+            const apiGetAllFiles = process.env.NEXT_PUBLIC_GETALLFILES ? process.env.NEXT_PUBLIC_GETALLFILES : ''
+            if (apiGetAllFiles === '') {
+                console.log('error apiGetAllFiles')
+                return;
+            }
+            const result = await fetch(apiGetAllFiles, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -52,7 +57,12 @@ function CTImage({ }: Props) {
     }, []);
     const queryImage = async (image: any) => {
         setLoading(true);
-        const result = await fetch(settings.getImage, {
+        const apiGetImage = process.env.NEXT_PUBLIC_GETIMAGE ? process.env.NEXT_PUBLIC_GETIMAGE : ''
+        if (apiGetImage === '') {
+            console.log('error getImage')
+            return;
+        }
+        const result = await fetch(apiGetImage, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -92,7 +102,14 @@ function CTImage({ }: Props) {
 
     const borrarImagen = async () => {
         setLoading(true);
-        const result = await fetch(settings.deleteImage, {
+        const apiDelete: string = process.env.NEXT_PUBLIC_DELETEIMAGE ? process.env.NEXT_PUBLIC_DELETEIMAGE : ''
+        const destinationFolder = process.env.DESTINATIONFOLDER ? process.env.DESTINATIONFOLDER : '';
+        if (apiDelete === '' || destinationFolder === '') {
+            console.log('error apiDelete')
+            return;
+        }
+
+        const result = await fetch(apiDelete, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -100,7 +117,7 @@ function CTImage({ }: Props) {
             body: JSON.stringify({
                 imagen: imgObj.folder + imgObj.imagen,
                 prompt: imgObj.folder + imgObj.prompt,
-                thumb: settings.destinationFolder + '/' + imgObj.imagen,
+                thumb: destinationFolder + '/' + imgObj.imagen,
                 password: password
 
             })
@@ -117,7 +134,13 @@ function CTImage({ }: Props) {
     }
     const realoadimages = async () => {
         setLoading(true)
-        const result = await fetch(settings.getAllFiles, {
+        const apiGetAllFiles = process.env.NEXT_PUBLIC_GETALLFILES ? process.env.NEXT_PUBLIC_GETALLFILES : ''
+        if (apiGetAllFiles === '') {
+            console.log('error apiGetAllFiles')
+            return;
+        }
+
+        const result = await fetch(apiGetAllFiles, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'

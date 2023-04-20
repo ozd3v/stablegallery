@@ -31,8 +31,10 @@ const getFileStats: any = async (filePath: string) => {
 }
 // get all file from direcotry /mtn/shares/sdimages and return as json using nodejs fs module
 export async function POST(req: NextRequest) {
-  const topTolders = readdirSync(settings.baseFolder);
-  console.log("topTolders", topTolders);
+
+  const baseFolder: string = process.env.BASEFOLDER ? process.env.BASEFOLDER : '';
+  const topTolders = readdirSync(baseFolder);
+
   // exclude folder 'img2img-grids' from topTolders array
   let index = topTolders.indexOf(settings.img2imggrid);
   if (index > -1) {
@@ -50,23 +52,23 @@ export async function POST(req: NextRequest) {
   //console.log(topTolders);
   // for each folder in the array, get the files in the folder and add to the array files
   topTolders.forEach((topTolder) => {
-    const dateFolder = readdirSync(`${settings.baseFolder}${topTolder}`);
+    const dateFolder = readdirSync(`${baseFolder}${topTolder}`);
     //console.log(`${topTolder}  - ${dateFolder}`);
     dateFolder.forEach((folder) => {
       //files.push(folder);
       // for each folder get files 
-      const filesInFolder = readdirSync(`${settings.baseFolder}${topTolder}/${folder}`);
+      const filesInFolder = readdirSync(`${baseFolder}${topTolder}/${folder}`);
       //console.log(`--- ${topTolder}  - ${folder} - ${filesInFolder}`);
       filesInFolder.forEach((file) => {
         files.push({
           file: file,
-          folder: `${settings.baseFolder}${topTolder}/${folder}/`,
+          folder: `${baseFolder}${topTolder}/${folder}/`,
         });
       });
     });
   });
   const newArray = [];
-  console.log("files", files)
+  //console.log("files", files)
 
   for (let i = 0; i < files.length; i += 2) {
     const imagen = files[i];
@@ -81,7 +83,7 @@ export async function POST(req: NextRequest) {
 
   //console.log(newArray);
 
-  const destinationFolder = settings.destinationFolder;
+  const destinationFolder = process.env.DESTINATIONFOLDER ? process.env.DESTINATIONFOLDER : '';
 
   //reverse newArray
   //newArray.reverse();
@@ -91,7 +93,8 @@ export async function POST(req: NextRequest) {
   for (let i = 0; i < newArray.length; i++) {
     const item: any = newArray[i];
     const imagePath = path.join(item.folder, item.imagen);
-    const thumbnailPath = path.join(destinationFolder, item.imagen);
+    const thumbnailPath = path.join(destinationFolder, i + "-" + item.imagen);
+    //console.log(thumbnailPath);
     //load .txt file data from item.folder and item.prompt with nodejs fs module
     const prompt = readFileSync(path.join(item.folder, item.prompt), 'utf8');
     try {
