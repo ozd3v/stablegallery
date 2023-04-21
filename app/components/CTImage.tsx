@@ -75,6 +75,7 @@ function CTImage({ }: Props) {
         const json = await result.json()
         if (!json.sucess) {
             console.log('error')
+            setLoading(false);
             return;
         }
         //console.log(json.data)
@@ -103,11 +104,13 @@ function CTImage({ }: Props) {
     const borrarImagen = async () => {
         setLoading(true);
         const apiDelete: string = process.env.NEXT_PUBLIC_DELETEIMAGE ? process.env.NEXT_PUBLIC_DELETEIMAGE : ''
-        const destinationFolder = process.env.DESTINATIONFOLDER ? process.env.DESTINATIONFOLDER : '';
+        const destinationFolder = process.env.NEXT_PUBLIC_DESTINATIONFOLDER ? process.env.NEXT_PUBLIC_DESTINATIONFOLDER : '';
         if (apiDelete === '' || destinationFolder === '') {
             console.log('error apiDelete')
+            setLoading(false);
             return;
         }
+        //console.log("a borrar", imgObj.folder + imgObj.thumbnailPath)
 
         const result = await fetch(apiDelete, {
             method: 'POST',
@@ -117,7 +120,7 @@ function CTImage({ }: Props) {
             body: JSON.stringify({
                 imagen: imgObj.folder + imgObj.imagen,
                 prompt: imgObj.folder + imgObj.prompt,
-                thumb: destinationFolder + '/' + imgObj.imagen,
+                thumb: imgObj.thumbnailPath,
                 password: password
 
             })
@@ -126,6 +129,7 @@ function CTImage({ }: Props) {
         const json = await result.json()
         if (!json.sucess) {
             console.log('error')
+            setLoading(false);
             return;
         }
         console.log(json)
@@ -152,6 +156,7 @@ function CTImage({ }: Props) {
         const json = await result.json()
         if (!json.sucess) {
             console.log('error')
+            setLoading(false);
             return;
         }
         //console.log(json.data)

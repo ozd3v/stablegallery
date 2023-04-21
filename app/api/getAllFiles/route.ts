@@ -77,6 +77,7 @@ export async function POST(req: NextRequest) {
       imagen: imagen.file,
       prompt: prompt.file,
       folder: imagen.folder,
+      ctime: new Date(await getFileStats(`${imagen.folder}${imagen.file}`))
     });
   }
 
@@ -93,7 +94,7 @@ export async function POST(req: NextRequest) {
   for (let i = 0; i < newArray.length; i++) {
     const item: any = newArray[i];
     const imagePath = path.join(item.folder, item.imagen);
-    const thumbnailPath = path.join(destinationFolder, i + "-" + item.imagen);
+    const thumbnailPath = path.join(destinationFolder, item.ctime.getTime() + "-" + item.imagen);
     //console.log(thumbnailPath);
     //load .txt file data from item.folder and item.prompt with nodejs fs module
     const prompt = readFileSync(path.join(item.folder, item.prompt), 'utf8');
@@ -104,8 +105,9 @@ export async function POST(req: NextRequest) {
         const thumbnailBuffer = await sharp(thumbnailPath).toBuffer();
         const base64Thumbnail = thumbnailBuffer.toString('base64');
         item['thumbnail'] = base64Thumbnail;
+        item['thumbnailPath'] = thumbnailPath;
         item['text'] = prompt;
-        item['ctime'] = await getFileStats(`${item.folder}${item.imagen}`);
+        //item['ctime'] = new Date(await getFileStats(`${item.folder}${item.imagen}`))
         //console.log('thumbnail exists');
         continue;
       }
@@ -121,7 +123,8 @@ export async function POST(req: NextRequest) {
       const base64Thumbnail = thumbnailBuffer.toString('base64');
       item['thumbnail'] = base64Thumbnail;
       item['text'] = prompt;
-      item['ctime'] = new Date(await getFileStats(`${item.folder}${item.imagen}`));
+      item['thumbnailPath'] = thumbnailPath;
+      //item['ctime'] = new Date(await getFileStats(`${item.folder}${item.imagen}`));
     } catch (error) {
       console.log(error);
     }
