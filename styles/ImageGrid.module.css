@@ -10,6 +10,8 @@
     }
 }
 
+/*
+
 .imageGrid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
@@ -23,6 +25,68 @@
     overflow: hidden;
     position: relative;
 }
+
+.imageGrid img {
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+    transition: all 0.3s ease-in-out;
+    cursor: pointer;
+    box-shadow: 0 0 5px #ffc400;
+    border-radius: 3px;
+    position: relative;
+    z-index: 1;
+}*/
+
+.imageGrid {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    padding: 16px;
+    width: 80%;
+    margin: 0 auto;
+    background-color: #0f0f0f;
+    border: 3px solid #dd5800;
+    border-radius: 5px;
+    overflow: hidden;
+    position: relative;
+}
+
+.imageGrid img {
+    margin: 8px;
+    position: relative;
+
+    width: auto;
+    height: auto;
+    transition: all 0.3s ease-in-out;
+    cursor: pointer;
+    box-shadow: 0 0 5px #ffc400;
+    border-radius: 3px;
+    z-index: 1;
+
+
+
+}
+
+.imageGridItem {
+    width: auto;
+    height: auto;
+    margin: 5px;
+}
+
+/* Agrega este estilo */
+/*
+.imageGrid img {
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+    transition: all 0.3s ease-in-out;
+    cursor: pointer;
+    box-shadow: 0 0 5px #ffc400;
+    border-radius: 3px;
+    position: relative;
+    z-index: 1;
+}*/
 
 .imageGrid::before,
 .imageGrid::after {
@@ -41,26 +105,10 @@
     animation-delay: 2s;
 }
 
-.imageGrid img {
-    width: 100%;
-    height: auto;
-    object-fit: cover;
-    transition: all 0.3s ease-in-out;
-    cursor: pointer;
-    box-shadow: 0 0 5px #ffc400;
-    border-radius: 3px;
-    position: relative;
-    z-index: 1;
-}
+
 
 .imageGrid img:hover {
     transform: scale(1.1);
     box-shadow: 0 0 15px #00ff00, 0 0 30px #00ff00;
     z-index: 2;
-}
-
-.imageGridItem {
-    width: auto;
-    height: auto;
-    margin: 5px;
 }

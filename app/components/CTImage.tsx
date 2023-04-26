@@ -30,7 +30,7 @@ function CTImage({ }: Props) {
     const [itemsPerPage, setItemsPerPage] = React.useState(50);
     const [hasMore, setHasMore] = React.useState(true);
     const fetchData = async (start = 0) => {
-        console.log('fetching', start)
+        //console.log('fetching', start)
         const apiGetAllFiles = process.env.NEXT_PUBLIC_GETALLFILES ? process.env.NEXT_PUBLIC_GETALLFILES : ''
         if (apiGetAllFiles === '') {
             console.log('error apiGetAllFiles')
@@ -66,7 +66,7 @@ function CTImage({ }: Props) {
         // Establece el estado "hasMore" según el valor devuelto por la API
         setHasMore(json.hasMore);
         setLoading(false)
-        console.log('fetching done', json.hasMore)
+        //console.log('fetching done', json.hasMore)
     }
     React.useEffect(() => {
         fetchData(0);
@@ -187,7 +187,7 @@ function CTImage({ }: Props) {
     return (
         <>
             <Button variant="contained" onClick={realoadimages}>Reload</Button>
-            <div className={styles.imageGrid}>
+            <div className={`${styles.imageGrid}`}>
                 <InfiniteScroll
                     dataLength={imagenes.length}
                     next={() => fetchData(imagenes.length)}
@@ -204,6 +204,21 @@ function CTImage({ }: Props) {
                         const blobie = new Blob([buffer]);
                         const objectUrld = URL.createObjectURL(blobie);
                         return (
+
+                            <Image
+                                key={uuidv4()}
+                                src={objectUrld}
+                                alt={imagen.imagen}
+                                width={0}
+                                height={0}
+                                onClick={() => showText(imagen)}
+                            />
+
+                        );
+                    })}
+                    {
+                        /** 
+                                                 return (
                             <div key={uuidv4()} className={styles.imageGridItem}>
                                 <Image
                                     key={uuidv4()}
@@ -213,12 +228,14 @@ function CTImage({ }: Props) {
                                     height={100}
                                     onClick={() => showText(imagen)}
                                 />
-                            </div>
-                        );
-                    })}
+                            </div> 
+                         
+                         */
+                    }
 
                 </InfiniteScroll>
             </div>
+
 
 
 
