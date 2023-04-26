@@ -1,5 +1,5 @@
 
-import { readdirSync, readFileSync, existsSync, stat } from "fs";
+import { readdirSync, readFileSync, existsSync, stat, lstat } from "fs";
 import { NextResponse, NextRequest } from 'next/server';
 import path from 'path';
 import sharp from 'sharp';
@@ -12,6 +12,22 @@ export const config = {
       sizeLimit: '100mb',
     }
   },
+}
+
+const getLStats: any = async (filePath: string) => {
+  return new Promise(async (resolve, reject) => {
+    lstat(filePath, function (err, stats) {
+      //Checking for errors
+      if (err) {
+        //console.log(err)
+        reject(err);
+      }
+      else {
+        //Logging the stats Object
+        resolve(stats);
+      }
+    })
+  });
 }
 
 const getFileStats: any = async (filePath: string) => {
@@ -29,8 +45,25 @@ const getFileStats: any = async (filePath: string) => {
     })
   });
 }
+
+const putAndCheck: any = async (filePath: string, files: any, file: any) => {
+  const split = file.split(".")
+  split[split.length - 1] = "txt"
+  const prompt = split.join(".")
+  const thumbnailExists = fileExists(filePath + prompt) //await sharp(thumbnailPath).metadata();
+  files.push({
+    file: file,
+    folder: filePath,
+    hasTxT: thumbnailExists
+  });
+
+}
 // get all file from direcotry /mtn/shares/sdimages and return as json using nodejs fs module
 export async function POST(req: NextRequest) {
+
+  const json = await req.json();
+  const start: any = json.start || 0;
+  const limit: any = json.limit || 50;
 
   const baseFolder: string = process.env.BASEFOLDER ? process.env.BASEFOLDER : '';
   const topTolders = readdirSync(baseFolder);
@@ -51,22 +84,35 @@ export async function POST(req: NextRequest) {
   const files: any = [];
   //console.log(topTolders);
   // for each folder in the array, get the files in the folder and add to the array files
-  topTolders.forEach((topTolder) => {
+
+  //topTolders.forEach((topTolder) => {
+  for (let i = 0; i < topTolders.length; i++) {
+    const topTolder = topTolders[i];
     const dateFolder = readdirSync(`${baseFolder}${topTolder}`);
     //console.log(`${topTolder}  - ${dateFolder}`);
-    dateFolder.forEach((folder) => {
+    // dateFolder.forEach((folder) => {
+    for (let j = 0; j < dateFolder.length; j++) {
+      const folder = dateFolder[j];
       //files.push(folder);
       // for each folder get files 
+      const stats = await getLStats(`${baseFolder}${topTolder}/${folder}`);
+      //console.log(`Is file: ${stats.isFile()}`);
+      if (stats.isFile()) {
+        //putAndCheck(`${baseFolder}${topTolder}/`, files, folder)
+        continue;
+      }
       const filesInFolder = readdirSync(`${baseFolder}${topTolder}/${folder}`);
       //console.log(`--- ${topTolder}  - ${folder} - ${filesInFolder}`);
-      filesInFolder.forEach((file) => {
+      //filesInFolder.forEach((file) => {
+      for (let k = 0; k < filesInFolder.length; k++) {
+        const file = filesInFolder[k];
         files.push({
           file: file,
           folder: `${baseFolder}${topTolder}/${folder}/`,
         });
-      });
-    });
-  });
+      };
+    };
+  };
   const newArray = [];
   //console.log("files", files)
 
@@ -132,7 +178,9 @@ export async function POST(req: NextRequest) {
   //console.log(newArray[1]);
   return NextResponse.json({
     sucess: true,
-    data: newArray.sort((a: any, b: any) => b.ctime - a.ctime)
+    //data: newArray.sort((a: any, b: any) => b.ctime - a.ctime)
+    data: newArray.sort((a: any, b: any) => b.ctime - a.ctime).slice(start, start + limit),
+    hasMore: newArray.length > start + limit,
   }, { status: 200 });
 }
 

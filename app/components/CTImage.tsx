@@ -15,45 +15,62 @@ import Button from '@mui/material/Button';
 import { settings } from '../config';
 import TextField from '@mui/material/TextField';
 import TextDisplay from './TextDisplay';
+import InfiniteScroll from 'react-infinite-scroll-component';
 
 type Props = {}
 type FixmeAny = any
 function CTImage({ }: Props) {
-    const [imagenes, setImagenes] = React.useState([]);
+    const [imagenes, setImagenes]: FixmeAny = React.useState([]);
     const [loading, setLoading] = React.useState(true);
     const [open, setOpen] = React.useState(false);
     const [image, setImage]: FixmeAny = React.useState({});
     const [text, setText]: FixmeAny = React.useState("");
     const [imgObj, setImgObj]: FixmeAny = React.useState({} as any);
     const [password, setPassword] = React.useState('');
-
-    React.useEffect(() => {
-        const fetchData = async () => {
-            const apiGetAllFiles = process.env.NEXT_PUBLIC_GETALLFILES ? process.env.NEXT_PUBLIC_GETALLFILES : ''
-            if (apiGetAllFiles === '') {
-                console.log('error apiGetAllFiles')
-                return;
-            }
-            const result = await fetch(apiGetAllFiles, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    path: '',
-                })
-            })
-            const json = await result.json()
-            if (!json.sucess) {
-                console.log('error')
-                return;
-            }
-            //console.log(json.data)
-            setImagenes(json.data)
-            setLoading(false)
+    const [itemsPerPage, setItemsPerPage] = React.useState(50);
+    const [hasMore, setHasMore] = React.useState(true);
+    const fetchData = async (start = 0) => {
+        console.log('fetching', start)
+        const apiGetAllFiles = process.env.NEXT_PUBLIC_GETALLFILES ? process.env.NEXT_PUBLIC_GETALLFILES : ''
+        if (apiGetAllFiles === '') {
+            console.log('error apiGetAllFiles')
+            return;
         }
-        console.log('fetching')
-        fetchData();
+        const result = await fetch(apiGetAllFiles, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                path: '',
+                start: start,
+                limit: itemsPerPage,
+            })
+        })
+        const json = await result.json()
+        if (!json.sucess) {
+            console.log('error')
+            setLoading(false);
+            return;
+        }
+        //console.log(json.data)
+        //setImagenes(json.data)
+        // Verifica si es la primera página (start = 0)
+        if (start === 0) {
+            // Establece las imágenes en el nuevo conjunto de datos
+            setImagenes(json.data);
+        } else {
+            // Agrega las imágenes al conjunto de datos existente
+            setImagenes([...imagenes, ...json.data]);
+        }
+        // Establece el estado "hasMore" según el valor devuelto por la API
+        setHasMore(json.hasMore);
+        setLoading(false)
+        console.log('fetching done', json.hasMore)
+    }
+    React.useEffect(() => {
+        fetchData(0);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
     const queryImage = async (image: any) => {
         setLoading(true);
@@ -138,6 +155,9 @@ function CTImage({ }: Props) {
     }
     const realoadimages = async () => {
         setLoading(true)
+        await fetchData(0);
+        /*
+        setLoading(true)
         const apiGetAllFiles = process.env.NEXT_PUBLIC_GETALLFILES ? process.env.NEXT_PUBLIC_GETALLFILES : ''
         if (apiGetAllFiles === '') {
             console.log('error apiGetAllFiles')
@@ -162,10 +182,40 @@ function CTImage({ }: Props) {
         //console.log(json.data)
         setImagenes(json.data)
         setLoading(false)
+        */
     }
     return (
         <>
             <Button variant="contained" onClick={realoadimages}>Reload</Button>
+            <InfiniteScroll
+                dataLength={imagenes.length}
+                next={() => fetchData(imagenes.length)}
+                hasMore={hasMore}
+                loader={<h4>Loading...</h4>}
+                endMessage={
+                    <p style={{ textAlign: 'center' }}>
+                        <b>Yay! You have seen it all</b>
+                    </p>
+                }
+            >
+                {imagenes.map((imagen: FixmeAny) => {
+                    const buffer = Buffer.from(imagen.thumbnail, 'base64');
+                    const blobie = new Blob([buffer]);
+                    const objectUrld = URL.createObjectURL(blobie);
+                    return (
+                        <Image
+                            key={uuidv4()}
+                            src={objectUrld}
+                            alt={imagen.imagen}
+                            width={100}
+                            height={100}
+                            onClick={() => showText(imagen)}
+                        />
+                    );
+                })}
+
+            </InfiniteScroll>
+
             <div className={`${styles.imageGrid}`}>
                 {imagenes.map((imagen: FixmeAny) => {
                     const buffer = Buffer.from(imagen.thumbnail, 'base64');
@@ -183,6 +233,7 @@ function CTImage({ }: Props) {
                     );
                 })}
             </div>
+
             <Backdrop
                 sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
                 open={loading}

@@ -58,3 +58,9 @@
     box-shadow: 0 0 15px #00ff00, 0 0 30px #00ff00;
     z-index: 2;
 }
+
+.imageGridItem {
+    width: 100px;
+    height: 100px;
+    margin: 5px;
+}
