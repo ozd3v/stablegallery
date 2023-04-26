@@ -187,52 +187,40 @@ function CTImage({ }: Props) {
     return (
         <>
             <Button variant="contained" onClick={realoadimages}>Reload</Button>
-            <InfiniteScroll
-                dataLength={imagenes.length}
-                next={() => fetchData(imagenes.length)}
-                hasMore={hasMore}
-                loader={<h4>Loading...</h4>}
-                endMessage={
-                    <p style={{ textAlign: 'center' }}>
-                        <b>Yay! You have seen it all</b>
-                    </p>
-                }
-            >
-                {imagenes.map((imagen: FixmeAny) => {
-                    const buffer = Buffer.from(imagen.thumbnail, 'base64');
-                    const blobie = new Blob([buffer]);
-                    const objectUrld = URL.createObjectURL(blobie);
-                    return (
-                        <Image
-                            key={uuidv4()}
-                            src={objectUrld}
-                            alt={imagen.imagen}
-                            width={100}
-                            height={100}
-                            onClick={() => showText(imagen)}
-                        />
-                    );
-                })}
+            <div className={styles.imageGrid}>
+                <InfiniteScroll
+                    dataLength={imagenes.length}
+                    next={() => fetchData(imagenes.length)}
+                    hasMore={hasMore}
+                    loader={<h4>Loading...</h4>}
+                    endMessage={
+                        <p style={{ textAlign: 'center' }}>
+                            <b>Yay! You have seen it all</b>
+                        </p>
+                    }
+                >
+                    {imagenes.map((imagen: FixmeAny) => {
+                        const buffer = Buffer.from(imagen.thumbnail, 'base64');
+                        const blobie = new Blob([buffer]);
+                        const objectUrld = URL.createObjectURL(blobie);
+                        return (
+                            <div key={uuidv4()} className={styles.imageGridItem}>
+                                <Image
+                                    key={uuidv4()}
+                                    src={objectUrld}
+                                    alt={imagen.imagen}
+                                    width={100}
+                                    height={100}
+                                    onClick={() => showText(imagen)}
+                                />
+                            </div>
+                        );
+                    })}
 
-            </InfiniteScroll>
-
-            <div className={`${styles.imageGrid}`}>
-                {imagenes.map((imagen: FixmeAny) => {
-                    const buffer = Buffer.from(imagen.thumbnail, 'base64');
-                    const blobie = new Blob([buffer]);
-                    const objectUrld = URL.createObjectURL(blobie);
-                    return (
-                        <Image
-                            key={uuidv4()}
-                            src={objectUrld}
-                            alt={imagen.imagen}
-                            width={100}
-                            height={100}
-                            onClick={() => showText(imagen)}
-                        />
-                    );
-                })}
+                </InfiniteScroll>
             </div>
+
+
 
             <Backdrop
                 sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
@@ -292,3 +280,22 @@ function CTImage({ }: Props) {
 }
 
 export default CTImage
+/*
+            <div className={`${styles.imageGrid}`}>
+                {imagenes.map((imagen: FixmeAny) => {
+                    const buffer = Buffer.from(imagen.thumbnail, 'base64');
+                    const blobie = new Blob([buffer]);
+                    const objectUrld = URL.createObjectURL(blobie);
+                    return (
+                        <Image
+                            key={uuidv4()}
+                            src={objectUrld}
+                            alt={imagen.imagen}
+                            width={100}
+                            height={100}
+                            onClick={() => showText(imagen)}
+                        />
+                    );
+                })}
+            </div>
+*/
