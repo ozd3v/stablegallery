@@ -1,9 +1,10 @@
 
-import { readdirSync, readFileSync, existsSync, stat, lstat } from "fs";
+import { readdirSync, readFileSync, existsSync, stat, lstat, writeFileSync } from "fs";
 import { NextResponse, NextRequest } from 'next/server';
 import path from 'path';
 import sharp from 'sharp';
 import { settings } from '../../config';
+import mime from 'mime';
 
 export const config = {
   api: {
@@ -46,16 +47,27 @@ const getFileStats: any = async (filePath: string) => {
   });
 }
 
-const putAndCheck: any = async (filePath: string, files: any, file: any) => {
-  const split = file.split(".")
-  split[split.length - 1] = "txt"
-  const prompt = split.join(".")
-  const thumbnailExists = fileExists(filePath + prompt) //await sharp(thumbnailPath).metadata();
-  files.push({
-    file: file,
-    folder: filePath,
-    hasTxT: thumbnailExists
-  });
+const putAndCheck: any = async (filePath: string, files: any) => {
+
+  const mimeType = mime.getType(filePath);
+  const extension = path.extname(filePath).toLowerCase();
+  const fileName = path.basename(filePath, path.extname(filePath));
+  const directoryPath = path.dirname(filePath)
+  // Verificar si el tipo MIME es de una imagen
+  if (mimeType && mimeType.startsWith('image/')) {
+    //console.log(`es imagen ${filePath}`)
+    const existePrompt = existsSync(`${directoryPath}/${fileName}.txt`);
+
+    if (!existePrompt) {
+      const data = 'NO PROMPT\nNegative prompt: NO NEGATIVE\nSteps: 20, Sampler: DPM++ SDE Karras, CFG scale: 7, Seed: 665764519, Face restoration: CodeFormer, Size: 512x512, Model hash: da5224a242, Model: aZovyaRPGArtistTools_v2, Clip skip: 2\n';
+      writeFileSync(`${directoryPath}/${fileName}.txt`, data);
+    }
+    //console.log(`${directoryPath}/${fileName}`);
+    files.push({
+      file: fileName + extension,
+      folder: `${directoryPath}/`,
+    });
+  }
 
 }
 // get all file from direcotry /mtn/shares/sdimages and return as json using nodejs fs module
@@ -88,53 +100,44 @@ export async function POST(req: NextRequest) {
   //topTolders.forEach((topTolder) => {
   for (let i = 0; i < topTolders.length; i++) {
     const topTolder = topTolders[i];
+    const stats = await getLStats(`${baseFolder}${topTolder}`);
+
+    if (stats.isFile()) {
+      putAndCheck(`${baseFolder}${topTolder}`, files);
+      continue;
+    }
     const dateFolder = readdirSync(`${baseFolder}${topTolder}`);
-    //console.log(`${topTolder}  - ${dateFolder}`);
-    // dateFolder.forEach((folder) => {
     for (let j = 0; j < dateFolder.length; j++) {
       const folder = dateFolder[j];
-      //files.push(folder);
-      // for each folder get files 
       const stats = await getLStats(`${baseFolder}${topTolder}/${folder}`);
-      //console.log(`Is file: ${stats.isFile()}`);
+
       if (stats.isFile()) {
-        //putAndCheck(`${baseFolder}${topTolder}/`, files, folder)
+        putAndCheck(`${baseFolder}${topTolder}/${folder}`, files);
         continue;
       }
       const filesInFolder = readdirSync(`${baseFolder}${topTolder}/${folder}`);
-      //console.log(`--- ${topTolder}  - ${folder} - ${filesInFolder}`);
-      //filesInFolder.forEach((file) => {
       for (let k = 0; k < filesInFolder.length; k++) {
         const file = filesInFolder[k];
-        files.push({
-          file: file,
-          folder: `${baseFolder}${topTolder}/${folder}/`,
-        });
+        await putAndCheck(`${baseFolder}${topTolder}/${folder}/${file}`, files);
       };
     };
   };
   const newArray = [];
-  //console.log("files", files)
 
-  for (let i = 0; i < files.length; i += 2) {
+  //console.log(files)
+
+  for (let i = 0; i < files.length; i++) {
     const imagen = files[i];
-    const prompt = files[i + 1];
+    const fileName = path.basename(imagen.folder + imagen.file, path.extname(imagen.folder + imagen.file));
     newArray.push({
       imagen: imagen.file,
-      prompt: prompt.file,
+      prompt: fileName + ".txt",
       folder: imagen.folder,
       ctime: new Date(await getFileStats(`${imagen.folder}${imagen.file}`))
     });
   }
 
-
-  //console.log(newArray);
-
   const destinationFolder = process.env.DESTINATIONFOLDER ? process.env.DESTINATIONFOLDER : '';
-
-  //reverse newArray
-  //newArray.reverse();
-  //console.log(newArray[0]);
 
 
   for (let i = 0; i < newArray.length; i++) {

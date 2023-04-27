@@ -53,8 +53,6 @@ function CTImage({ }: Props) {
             setLoading(false);
             return;
         }
-        //console.log(json.data)
-        //setImagenes(json.data)
         // Verifica si es la primera página (start = 0)
         if (start === 0) {
             // Establece las imágenes en el nuevo conjunto de datos
@@ -156,33 +154,6 @@ function CTImage({ }: Props) {
     const realoadimages = async () => {
         setLoading(true)
         await fetchData(0);
-        /*
-        setLoading(true)
-        const apiGetAllFiles = process.env.NEXT_PUBLIC_GETALLFILES ? process.env.NEXT_PUBLIC_GETALLFILES : ''
-        if (apiGetAllFiles === '') {
-            console.log('error apiGetAllFiles')
-            return;
-        }
-
-        const result = await fetch(apiGetAllFiles, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                path: '',
-            })
-        })
-        const json = await result.json()
-        if (!json.sucess) {
-            console.log('error')
-            setLoading(false);
-            return;
-        }
-        //console.log(json.data)
-        setImagenes(json.data)
-        setLoading(false)
-        */
     }
     return (
         <>
@@ -195,7 +166,7 @@ function CTImage({ }: Props) {
                     loader={<h4>Loading...</h4>}
                     endMessage={
                         <p style={{ textAlign: 'center' }}>
-                            <b>Yay! You have seen it all</b>
+                            <b>No hay más</b>
                         </p>
                     }
                 >
@@ -216,28 +187,9 @@ function CTImage({ }: Props) {
 
                         );
                     })}
-                    {
-                        /** 
-                                                 return (
-                            <div key={uuidv4()} className={styles.imageGridItem}>
-                                <Image
-                                    key={uuidv4()}
-                                    src={objectUrld}
-                                    alt={imagen.imagen}
-                                    width={100}
-                                    height={100}
-                                    onClick={() => showText(imagen)}
-                                />
-                            </div> 
-                         
-                         */
-                    }
 
                 </InfiniteScroll>
             </div>
-
-
-
 
             <Backdrop
                 sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
