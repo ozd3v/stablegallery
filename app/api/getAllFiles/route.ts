@@ -70,6 +70,22 @@ const putAndCheck: any = async (filePath: string, files: any) => {
   }
 
 }
+
+// Función para obtener los archivos de imagen en una carpeta
+async function getImagesInFolder(folderPath: any, fileList: any, excludedFolders: any = []) {
+  const items = readdirSync(folderPath);
+  for (const item of items) {
+    const itemPath = path.join(folderPath, item);
+    if (!excludedFolders.includes(itemPath)) {
+      const stats = await getLStats(`${itemPath}`);
+      if (stats.isFile()) {
+        putAndCheck(`${itemPath}`, fileList);
+      } else if (stats.isDirectory()) {
+        await getImagesInFolder(itemPath, fileList, excludedFolders);
+      }
+    }
+  }
+}
 // get all file from direcotry /mtn/shares/sdimages and return as json using nodejs fs module
 export async function POST(req: NextRequest) {
 
@@ -93,41 +109,47 @@ export async function POST(req: NextRequest) {
   if (index > -1) {
     topTolders.splice(index, 1);
   }
-  const files: any = [];
+  //const files: any = [];
+  const recurFiles: any = [];
+
+  const excludedFolders = [`${baseFolder}${settings.img2imggrid}`, `${baseFolder}${settings.txt2imggrid}`, `${baseFolder}${settings.extrasImages}`];
+  await getImagesInFolder(`${baseFolder}`, recurFiles, excludedFolders);
+  //console.log(recurFiles);
   //console.log(topTolders);
   // for each folder in the array, get the files in the folder and add to the array files
 
   //topTolders.forEach((topTolder) => {
-  for (let i = 0; i < topTolders.length; i++) {
-    const topTolder = topTolders[i];
-    const stats = await getLStats(`${baseFolder}${topTolder}`);
+  /*
+for (let i = 0; i < topTolders.length; i++) {
+  const topTolder = topTolders[i];
+  const stats = await getLStats(`${baseFolder}${topTolder}`);
+
+  if (stats.isFile()) {
+    putAndCheck(`${baseFolder}${topTolder}`, files);
+    continue;
+  }
+  const dateFolder = readdirSync(`${baseFolder}${topTolder}`);
+  for (let j = 0; j < dateFolder.length; j++) {
+    const folder = dateFolder[j];
+    const stats = await getLStats(`${baseFolder}${topTolder}/${folder}`);
 
     if (stats.isFile()) {
-      putAndCheck(`${baseFolder}${topTolder}`, files);
+      putAndCheck(`${baseFolder}${topTolder}/${folder}`, files);
       continue;
     }
-    const dateFolder = readdirSync(`${baseFolder}${topTolder}`);
-    for (let j = 0; j < dateFolder.length; j++) {
-      const folder = dateFolder[j];
-      const stats = await getLStats(`${baseFolder}${topTolder}/${folder}`);
-
-      if (stats.isFile()) {
-        putAndCheck(`${baseFolder}${topTolder}/${folder}`, files);
-        continue;
-      }
-      const filesInFolder = readdirSync(`${baseFolder}${topTolder}/${folder}`);
-      for (let k = 0; k < filesInFolder.length; k++) {
-        const file = filesInFolder[k];
-        await putAndCheck(`${baseFolder}${topTolder}/${folder}/${file}`, files);
-      };
+    const filesInFolder = readdirSync(`${baseFolder}${topTolder}/${folder}`);
+    for (let k = 0; k < filesInFolder.length; k++) {
+      const file = filesInFolder[k];
+      await putAndCheck(`${baseFolder}${topTolder}/${folder}/${file}`, files);
     };
   };
+};
+*/
   const newArray = [];
 
-  //console.log(files)
 
-  for (let i = 0; i < files.length; i++) {
-    const imagen = files[i];
+  for (let i = 0; i < recurFiles.length; i++) {
+    const imagen = recurFiles[i];
     const fileName = path.basename(imagen.folder + imagen.file, path.extname(imagen.folder + imagen.file));
     newArray.push({
       imagen: imagen.file,
