@@ -16,6 +16,7 @@ import { settings } from '../config';
 import TextField from '@mui/material/TextField';
 import TextDisplay from './TextDisplay';
 import InfiniteScroll from 'react-infinite-scroll-component';
+import { makeStyles } from '@material-ui/core/styles';
 
 type Props = {}
 type FixmeAny = any
@@ -155,6 +156,16 @@ function CTImage({ }: Props) {
         setLoading(true)
         await fetchData(0);
     }
+    const useStyles = makeStyles({
+        dialogContainer: {
+            backgroundColor: '#0f0f0f',
+            color: '#00ff00',
+            border: '2px solid #ffc400',
+            borderRadius: '5px',
+        },
+    });
+    const classes = useStyles();
+
     return (
         <>
             <Button variant="contained" onClick={realoadimages}>Reload</Button>
@@ -199,9 +210,9 @@ function CTImage({ }: Props) {
             </Backdrop>
             <Dialog open={open} onClose={handleClose} maxWidth={'md'}
                 fullWidth={true}
-                PaperProps={{
-                    className: DialogStyles.dialogContainer
-                }}
+                //PaperProps={{ className: DialogStyles.dialogContainer }}
+                //classes={{ paper: DialogStyles.dialogContainer }}
+                classes={{ paper: classes.dialogContainer }}
 
             >
                 <DialogTitle className={DialogStyles.dialogTitle} >{"Detalles"}
