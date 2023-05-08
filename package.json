@@ -15,9 +15,11 @@
     "@material-ui/styles": "^4.11.5",
     "@mui/icons-material": "^5.11.16",
     "@mui/material": "^5.12.2",
+    "@popperjs/core": "^2.11.7",
     "@types/node": "18.15.11",
     "@types/react": "18.0.34",
     "@types/react-dom": "18.0.11",
+    "bootstrap": "^5.2.3",
     "buffer": "^6.0.3",
     "eslint": "8.38.0",
     "eslint-config-next": "13.3.0",
@@ -33,6 +35,7 @@
     "uuid": "^9.0.0"
   },
   "devDependencies": {
+    "@types/bootstrap": "^5.2.6",
     "@types/mime": "^3.0.1",
     "@types/uuid": "^9.0.1"
   }

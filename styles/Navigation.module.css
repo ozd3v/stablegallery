@@ -1,0 +1,108 @@
+/*
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #1e1e1e;
+    padding: 8px 16px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    border-radius: 4px;
+}
+
+.navigation {
+    display: flex;
+    list-style: none;
+    gap: 32px;
+}
+
+.navigation a {
+    color: #000000;
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 16px;
+    position: relative;
+    transition: color 0.2s ease-in-out;
+}
+
+.navigation a:hover {
+    color: #927123;
+    text-decoration: none;
+}
+
+.navCustomBackGround {
+    background-color: #b8b8b8;
+}
+
+// Efecto dinámico para los botones con cambio de color 
+.navigation a::before {
+    content: "";
+    display: block;
+    position: absolute;
+    width: 100%;
+    height: 2px;
+    bottom: 0;
+    left: 0;
+    background-image: linear-gradient(90deg, #f9b208, #ff69b4, #8a2be2);
+    visibility: hidden;
+    transform: scaleX(0);
+    transition: all 0.3s ease-in-out 0s;
+}
+
+.navigation a:hover::before {
+    visibility: visible;
+    transform: scaleX(1);
+}
+*/
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #8a0d0d;
+    padding: 8px 16px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    border-radius: 4px;
+}
+
+.navigation {
+    display: flex;
+    list-style: none;
+    gap: 32px;
+}
+
+.navigation a {
+    color: #ffc400;
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 16px;
+    position: relative;
+    transition: color 0.2s ease-in-out;
+}
+
+.navigation a:hover {
+    color: #dd5800;
+    text-decoration: none;
+}
+
+.navCustomBackGround {
+    background-color: #0f0f0f;
+}
+
+/* Efecto dinámico para los botones con cambio de color */
+.navigation a::before {
+    content: "";
+    display: block;
+    position: absolute;
+    width: 100%;
+    height: 2px;
+    bottom: 0;
+    left: 0;
+    background-image: linear-gradient(90deg, #ffc400, #dd5800);
+    visibility: hidden;
+    transform: scaleX(0);
+    transition: all 0.3s ease-in-out 0s;
+}
+
+.navigation a:hover::before {
+    visibility: visible;
+    transform: scaleX(1);
+}

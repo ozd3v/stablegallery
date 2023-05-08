@@ -1,0 +1,56 @@
+.tipsContainer {
+    background-color: #0f0f0f;
+    padding: 16px;
+    color: #ffc400;
+    font-family: 'Courier New', Courier, monospace;
+}
+
+.pageTitle {
+    font-size: 2rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    border-bottom: 2px solid #ffc400;
+    padding-bottom: 8px;
+    margin-bottom: 16px;
+}
+
+.modelsGrid {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    width: 100%;
+}
+
+.modelCard {
+    background-color: #1e1e1e;
+    border-radius: 5px;
+    padding: 16px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    width: 95%;
+    transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+}
+
+.modelCard:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+}
+
+.modelTitle {
+    font-size: 1.5rem;
+    margin-bottom: 8px;
+}
+
+.modelImage {
+    width: 5%;
+    height: auto;
+    object-fit: cover;
+    box-shadow: 0 0 5px #ffc400;
+    border-radius: 3px;
+    margin-bottom: 8px;
+    margin-left: 8px;
+}
+
+.modelTips {
+    font-size: 1rem;
+}
