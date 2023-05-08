@@ -9,7 +9,10 @@ export default function Home() {
       <Navigation />
       <div className={HomeStyles.homeContainer}>
         <h1 className={HomeStyles.title}>Galeria</h1>
-        <CTImage />
+        {
+          //<CTImage />
+        }
+        <div>HOLA</div>
       </div>
     </>
   )

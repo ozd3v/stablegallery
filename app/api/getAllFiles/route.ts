@@ -114,7 +114,7 @@ export async function POST(req: NextRequest) {
 
   const excludedFolders = [`${baseFolder}${settings.img2imggrid}`, `${baseFolder}${settings.txt2imggrid}`, `${baseFolder}${settings.extrasImages}`];
   await getImagesInFolder(`${baseFolder}`, recurFiles, excludedFolders);
-  console.log(recurFiles);
+  //console.log(recurFiles);
   //console.log(topTolders);
   // for each folder in the array, get the files in the folder and add to the array files
 
