@@ -17,14 +17,14 @@ export default function RootLayout({
 }: {
   children: React.ReactNode
 }) {
-
-  useEffect(() => {
-    //import('bootstrap/dist/js/bootstrap.bundle.min.js')
-    // import('bootstrap/dist/js/bootstrap.bundle.min.js')
-    typeof document !== undefined
-      ? require('bootstrap/dist/js/bootstrap')
-      : null
-  }, [])
+  /*
+    useEffect(() => {
+      //import('bootstrap/dist/js/bootstrap.bundle.min.js')
+      // import('bootstrap/dist/js/bootstrap.bundle.min.js')
+      typeof document !== undefined
+        ? require('bootstrap/dist/js/bootstrap')
+        : null
+    }, []) */
 
   return (
     <html lang="en">
