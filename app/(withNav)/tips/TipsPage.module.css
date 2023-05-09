@@ -29,6 +29,7 @@
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
     width: 95%;
     transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+    position: relative;
 }
 
 .modelCard:hover {
@@ -42,7 +43,7 @@
 }
 
 .modelImage {
-    width: 5%;
+    width: 20%;
     height: auto;
     object-fit: cover;
     box-shadow: 0 0 5px #ffc400;
