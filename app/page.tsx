@@ -6,16 +6,10 @@ export default function Home() {
 
   return (
     <>
-      {
-        //<Navigation />
-      }
-
+      <Navigation />
       <div className={HomeStyles.homeContainer}>
         <h1 className={HomeStyles.title}>Galeria</h1>
-        {
-          //<CTImage />
-        }
-        <div>HOLA</div>
+        <CTImage />
       </div>
     </>
   )
