@@ -88,7 +88,7 @@ async function getImagesInFolder(folderPath: any, fileList: any, excludedFolders
 }
 // get all file from direcotry /mtn/shares/sdimages and return as json using nodejs fs module
 export async function POST(req: NextRequest) {
-
+  console.log("FETCHING")
   const json = await req.json();
   const start: any = json.start || 0;
   const limit: any = json.limit || 50;
